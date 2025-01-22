@@ -3,7 +3,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
-
+import re
 from crud_functions import *
 
 api = '7269628965:AAH2Et-1chdUtKhxHctaTdXkBxEhCuYwjpo'
@@ -181,7 +181,11 @@ async def sing_up(message):
 
 @dp.message_handler(state= RegistrationState.username)
 async def set_username(message, state):
-    if is_included(message.text) == True:
+
+    if re.search(r'[^a-zA-Z]', message.text):
+        await message.answer('Только латинский алфавит!')
+        await RegistrationState.username.set()
+    elif is_included(message.text) == True:
         await RegistrationState.username.set()
         await message.answer('Пользователь существует, введите другое имя')
     else:
@@ -190,17 +194,28 @@ async def set_username(message, state):
         await message.answer('Введите свой email:')
         await RegistrationState.email.set()
 
+
+
+
 @dp.message_handler(state= RegistrationState.email)
 async def set_email(message, state):
     await state.update_data(email=message.text)
     data = await state.get_data()
-    await message.answer('Введите свой возраст')
-    await RegistrationState.age.set()
+    if '@' not in data['email']:
+        await message.answer('Неверная почта. Введите заново')
+        await RegistrationState.email.set()
+    else:
+        await message.answer('Введите свой возраст')
+        await RegistrationState.age.set()
+
 
 @dp.message_handler(state= RegistrationState.age)
 async def set_age(message,state):
     await state.update_data(age= message.text)
     data= await state.get_data()
+    if data['age'] != int:
+        await message.answer('Неверные данные. Введите заново')
+        await RegistrationState.age.set()
     username = data['username']
     email = data['email']
     age = data['age']
