@@ -3,7 +3,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
-from aiogram.dispatcher import FSMContext
+
 from crud_functions import *
 
 api = '7269628965:AAH2Et-1chdUtKhxHctaTdXkBxEhCuYwjpo'
@@ -17,7 +17,7 @@ button_shop = KeyboardButton(text = 'Купить')
 button_register = KeyboardButton(text= 'Регистрация')
 kb.add(button_calculate,button_info)
 kb.add(button_shop)
-
+kb.add(button_register)
 #Для расчёта калорий----------------------------------------------------------------------------------------------------
 in_kb = InlineKeyboardMarkup()
 button_rkn = InlineKeyboardButton(text= 'Рассчитать норму калорий', callback_data= 'calories')
@@ -181,15 +181,33 @@ async def sing_up(message):
 
 @dp.message_handler(state= RegistrationState.username)
 async def set_username(message, state):
-    state.update_data(username=message.text)
-    data = await state.get_data()
-    bool_us = is_included(data)
-    if bool_us == True:
-        await message.anser('Пользователь существует, введите другое имя')
-        await sing_up()
-    else:
-        await message.answer('Введите свой email:')
+    if is_included(message.text) == True:
         await RegistrationState.username.set()
+        await message.answer('Пользователь существует, введите другое имя')
+    else:
+        await state.update_data(username=message.text)
+        data = await state.get_data()
+        await message.answer('Введите свой email:')
+        await RegistrationState.email.set()
+
+@dp.message_handler(state= RegistrationState.email)
+async def set_email(message, state):
+    await state.update_data(email=message.text)
+    data = await state.get_data()
+    await message.answer('Введите свой возраст')
+    await RegistrationState.age.set()
+
+@dp.message_handler(state= RegistrationState.age)
+async def set_age(message,state):
+    await state.update_data(age= message.text)
+    data= await state.get_data()
+    username = data['username']
+    email = data['email']
+    age = data['age']
+
+    add_user(username, email, age)
+    await message.answer('Регистрaция прошла успешно!')
+    await state.finish()
 
 
 
