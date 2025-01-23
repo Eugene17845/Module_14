@@ -6,7 +6,7 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 from aiogram.dispatcher import FSMContext
 from crud_functions import initiate_db, get_all_products
 
-api = '7269628965:AAH2Et-1chdUtKhxHctaTdXkBxEhCuYwjpo'
+api = ''
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage = MemoryStorage())
 #Клавиатуры-------------------------------------------------------------------------------------------------------------
