@@ -199,14 +199,30 @@ async def set_username(message, state):
 
 @dp.message_handler(state= RegistrationState.email)
 async def set_email(message, state):
-    await state.update_data(email=message.text)
-    data = await state.get_data()
-    if '@' not in data['email']:
-        await message.answer('Неверная почта. Введите заново')
-        await RegistrationState.email.set()
-    else:
-        await message.answer('Введите свой возраст')
+    mess_mail = re.compile(rf'\b@gmail.com\b')
+    mess_mail1 = re.compile(rf'\b@mail.com\b')
+    mess_mail2 = re.compile(rf'\b@yandex.ru\b')
+    found = bool(mess_mail.search(message.text))
+    found1 = bool(mess_mail1.search(message.text))
+    found2 = bool(mess_mail2.search(message.text))
+    if found == True:
+        await state.update_data(email=message.text)
+        data = await state.get_data()
+        await message.answer('Введите свой возраст:')
         await RegistrationState.age.set()
+    elif found1 == True:
+        await state.update_data(email=message.text)
+        data = await state.get_data()
+        await message.answer('Введите свой возраст:')
+        await RegistrationState.age.set()
+    elif found2 == True:
+        await state.update_data(email=message.text)
+        data = await state.get_data()
+        await message.answer('Введите свой возраст:')
+        await RegistrationState.age.set()
+    else:
+        await message.answer('Неверная почта. Введите заново:')
+        await RegistrationState.email.set()
 
 
 @dp.message_handler(state= RegistrationState.age)
