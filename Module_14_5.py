@@ -6,7 +6,7 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 import re
 from crud_functions import *
 
-api = '7269628965:AAH2Et-1chdUtKhxHctaTdXkBxEhCuYwjpo'
+api = ''
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage = MemoryStorage())
 #Клавиатуры-------------------------------------------------------------------------------------------------------------
