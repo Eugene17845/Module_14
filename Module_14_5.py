@@ -225,20 +225,20 @@ async def set_email(message, state):
         await RegistrationState.email.set()
 
 
-@dp.message_handler(state= RegistrationState.age)
-async def set_age(message,state):
-    await state.update_data(age= message.text)
-    data= await state.get_data()
-    if data['age'] != int:
-        await message.answer('Неверные данные. Введите заново')
+ext.isdigit():
+        await message.answer('Неверные данные. Введите заново:')
         await RegistrationState.age.set()
-    username = data['username']
-    email = data['email']
-    age = data['age']
+    else:
+        await state.update_data(age= message.text)
+        data= await state.get_data()
+        username = data['username']
+        email = data['email']
+        age = data['age']
 
-    add_user(username, email, age)
-    await message.answer('Регистрaция прошла успешно!')
-    await state.finish()
+        add_user(username, email, age)
+        await message.answer('Регистрaция прошла успешно!')
+        await state.finish()
+
 
 
 
